@@ -11,9 +11,9 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[python]": {
-  "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "workbench.colorTheme": "Dark+",
+  "workbench.colorTheme": "Tomorrow Night Blue",
   "workbench.iconTheme": "vscode-icons",
   "github.copilot.enable": {
     "python": false,

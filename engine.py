@@ -56,54 +56,45 @@ def phase1_decrypt(text, key):
     return result
 
 
-def encrypt(text, key):
-    """
-    CipherForge Master Encryption — Applies all 5 phases.
+def encrypt(plaintext, key):
+    """Apply all encryption phases in sequence."""
+    result = plaintext
 
-    Currently implemented: Phases 1-2
-    Coming soon: Phases 3-5
-    """
-    # Phase 1: Substitution — change WHAT characters are
-    result = phase1_encrypt(text, key)
+    # Phase 1: Substitution (shift all characters)
+    result = phase1_encrypt(result, key)
 
-    # Phase 2: Transposition — change WHERE characters are
+    # Phase 2: Transposition (reverse blocks)
     result = phase2_encrypt(result, key)
 
-    # TODO: Phase 3 — Key-Dependent
-    # result = phase3_encrypt(result, key)
+    # Phase 3: Key-dependent (password-based variable shift)
+    result = phase3_encrypt(result, key)
 
-    # TODO: Phase 4 — Noise Injection
-    # result = phase4_encrypt(result, key)
+    # Phase 4: Noise injection (add decoy characters)
+    result = phase4_encrypt(result, key)
 
-    # TODO: Phase 5 — Wild Card
-    # result = phase5_encrypt(result, key)
+    # TODO: Phase 5 - Wild Card (your invention!)
 
     return result
 
 
-def decrypt(text, key):
-    """
-    CipherForge Master Decryption — Reverses all 5 phases.
+def decrypt(ciphertext, key):
+    """Reverse all encryption phases."""
+    result = ciphertext
 
-    CRITICAL: Phases must be reversed in OPPOSITE order!
-    Encrypt: 1 → 2 → 3 → 4 → 5
-    Decrypt: 5 → 4 → 3 → 2 → 1
-    """
-    result = text
+    # Decrypt in REVERSE order!
 
-    # TODO: Phase 5 — Reverse Wild Card (first!)
-    # result = phase5_decrypt(result, key)
+    # TODO: Phase 5 - Wild Card (your invention!)
 
-    # TODO: Phase 4 — Reverse Noise Injection
-    # result = phase4_decrypt(result, key)
+    # Phase 4: Remove noise characters
+    result = phase4_decrypt(result, key)
 
-    # TODO: Phase 3 — Reverse Key-Dependent
-    # result = phase3_decrypt(result, key)
+    # Phase 3: Reverse password-based shift
+    result = phase3_decrypt(result, key)
 
-    # Phase 2: Reverse Transposition
+    # Phase 2: Reverse transposition (self-inverse)
     result = phase2_decrypt(result, key)
 
-    # Phase 1: Reverse Substitution (last!)
+    # Phase 1: Reverse substitution (shift back)
     result = phase1_decrypt(result, key)
 
     return result
@@ -162,9 +153,6 @@ def phase2_decrypt(text, key):
         result += block[::-1]
 
     return result
-
-
-print(phase2_encrypt("hello world", master_key))
 
 
 def phase3_encrypt(text, key):
@@ -234,5 +222,78 @@ def phase3_decrypt(text, key):
             result += chr(new_position + 32)
         else:
             result += char
+
+    return result
+
+
+###############################################
+# PHASE 4: NOISE INJECTION
+###############################################
+
+
+def phase4_encrypt(text, key):
+    """Insert noise character every N positions."""
+    interval = key.get("noise_interval", 3)
+    noise = key.get("noise_char", "~")
+
+    result = ""
+    count = 0
+
+    for char in text:
+        result += char
+        count += 1
+        # Insert noise after every N real characters
+        if count % interval == 0:
+            result += noise
+
+    return result
+
+
+def phase4_decrypt(text, key):
+    """Remove noise characters at their known positions."""
+    interval = key.get("noise_interval", 3)
+
+    result = ""
+    real_count = 0
+    i = 0
+
+    while i < len(text):
+        result += text[i]
+        real_count += 1
+        i += 1
+
+        # Skip the noise character after every N real characters
+        if real_count % interval == 0 and i < len(text):
+            i += 1  # Skip noise
+
+    return result
+
+
+###############################################
+# PHASE 5: WILD CARD - [YOUR NAME HERE]
+###############################################
+
+
+def phase5_encrypt(text):
+    """[Describe what your phase does]."""
+    arr = list(text)
+    result = ""
+    for i in range(len(arr)):
+        arr[i] = chr(ord(arr[i]) + i)
+
+    for j in arr:
+        result += j
+
+    return result
+
+
+def phase5_decrypt(text):
+    arr = list(text)
+    result = ""
+    for i in range(len(arr)):
+        arr[i] = chr(ord(arr[i]) - i)
+
+    for j in arr:
+        result += j
 
     return result
